@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.osgi_3.11.3.v20170209-1843.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.osgi_3.11.3.v20170209-1843.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.core.commands_3.8.1.v20161221-1651.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.core.commands_3.8.1.v20161221-1651.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.swt.win32.win32.x86_3.105.3.v20170228-0512.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.swt.win32.win32.x86_3.105.3.v20170228-0512.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.jface_3.12.2.v20170113-2113.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.jface_3.12.2.v20170113-2113.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.jface.text_3.11.2.v20170220-1911.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.jface.text_3.11.2.v20170220-1911.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.ui.workbench_3.108.3.v20170216-1539.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.ui.workbench_3.108.3.v20170216-1539.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/com.ibm.icu_56.1.0.v201601250100.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/com.ibm.icu_56.1.0.v201601250100.jar"/>
+	<classpathentry kind="lib" path="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.ui.forms_3.7.1.v20161220-1635.jar" sourcepath="C:/下载/eclipse-java-neon-3-win32/eclipse/plugins/org.eclipse.ui.forms_3.7.1.v20161220-1635.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jai_imageio.jar"/>
+	<classpathentry kind="lib" path="lib/jna.jar"/>
+	<classpathentry kind="lib" path="lib/tess4j.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="translateLibs/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="translateLibs/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="translateLibs/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="translateLibs/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="translateLibs/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="translateLibs/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="translateLibs/ezmorph-1.0.6.jar"/>
+	<classpathentry kind="lib" path="translateLibs/fluent-hc-4.5.2.jar"/>
+	<classpathentry kind="lib" path="translateLibs/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="translateLibs/httpclient-cache-4.5.2.jar"/>
+	<classpathentry kind="lib" path="translateLibs/httpclient-win-4.5.2.jar"/>
+	<classpathentry kind="lib" path="translateLibs/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="translateLibs/httpmime-4.5.2.jar"/>
+	<classpathentry kind="lib" path="translateLibs/util_trans.jar"/>
+	<classpathentry kind="lib" path="translateLibs/json-lib-2.4-jdk15.jar"/>
+	<classpathentry kind="lib" path="translateLibs/jna-platform-4.1.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
