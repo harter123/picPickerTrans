@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.util.ImageHelper;
 import text.compare.CompareWin;
@@ -84,7 +85,7 @@ public class Main extends JFrame {
 	 */
 	public Main() {
 		initView();
-		TessInstance = new Tesseract();
+		TessInstance = new Tesseract1();
 		
 		TessInstance.setDatapath(System.getProperty("user.dir")+"/tessdata");
 
@@ -214,7 +215,7 @@ public class Main extends JFrame {
 		getContentPane().setLayout(gridBagLayout);
 
 		btStartPicker = new JButton("\u622A\u5C4F");
-		btStartPicker.setFont(new Font("宋体", Font.PLAIN, 20));
+		btStartPicker.setFont(new Font("Dialog", Font.PLAIN, 25));
 		GridBagConstraints gbc_btStartPicker = new GridBagConstraints();
 		gbc_btStartPicker.fill = GridBagConstraints.BOTH;
 		gbc_btStartPicker.insets = new Insets(0, 0, 5, 0);
@@ -245,7 +246,7 @@ public class Main extends JFrame {
 		
 		btIdentify = new JButton("\u8BC6\u522B");// 添加翻译按钮
 		
-		btIdentify.setFont(new Font("宋体", Font.PLAIN, 20));
+		btIdentify.setFont(new Font("Dialog", Font.PLAIN, 25));
 		GridBagConstraints gbc_btIdentify = new GridBagConstraints();
 		gbc_btIdentify.fill = GridBagConstraints.BOTH;
 		gbc_btIdentify.insets = new Insets(0, 0, 5, 0);
@@ -302,7 +303,7 @@ public class Main extends JFrame {
 
 		
 		btTranslate = new JButton("翻译");
-		btTranslate.setFont(new Font("宋体", Font.PLAIN, 20));
+		btTranslate.setFont(new Font("宋体", Font.PLAIN, 25));
 		GridBagConstraints gbc_btTranslate = new GridBagConstraints();
 		gbc_btTranslate.fill = GridBagConstraints.BOTH;
 		gbc_btTranslate.insets = new Insets(0, 0, 5, 0);
@@ -337,9 +338,9 @@ public class Main extends JFrame {
 		this.setJMenuBar(menubar);
 		
 		menu = new JMenu("其他");
-		menu.setFont(new Font("Monospaced", Font.BOLD, 15));
+		menu.setFont(new Font("Monospaced", Font.BOLD, 25));
 		menuitemCompare = new JMenuItem("文件比较");
-		menuitemCompare.setFont(new Font("Monospaced", Font.BOLD, 15));
+		menuitemCompare.setFont(new Font("Monospaced", Font.BOLD, 25));
 		menu.add(menuitemCompare);
 		menubar.add(menu);
 	}

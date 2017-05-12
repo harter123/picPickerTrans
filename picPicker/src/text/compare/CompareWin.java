@@ -79,6 +79,7 @@ public class CompareWin extends JFrame {
 	 * Create the frame.
 	 */
 	public CompareWin(){
+		setFont(new Font("Dialog", Font.PLAIN, 25));
 		initView();
 		diff = new Diff_match_patch();
 		btCompare.addActionListener(new ActionListener() {
@@ -92,7 +93,7 @@ public class CompareWin extends JFrame {
 				if(""==text1||""==text2){
 					return;
 				}
-//				System.out.println(p.diff_main("12352ÎÒ2", "12332Ëû2",true,10));
+//				System.out.println(p.diff_main("12352ï¿½ï¿½2", "12332ï¿½ï¿½2",true,10));
 				LinkedList<Diff> list = diff.diff_main(text1, text2, true);
 				if(null==list||0==list.size()){
 					return;
@@ -124,17 +125,17 @@ public class CompareWin extends JFrame {
 		setBounds(100, 100, 1258, 962);
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.rowWeights = new double[] { 3, 0, 2 };// ³õÊ¼»¯²¼¾Ö
+		gridBagLayout.rowWeights = new double[] { 3, 0, 2 };// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		gridBagLayout.columnWeights = new double[] { 1, 1 };
 		getContentPane().setLayout(gridBagLayout);
 
-		/* Ô­ÎÄ±¾ */
+		/* Ô­ï¿½Ä±ï¿½ */
 		taRsd = new JTextArea();
 		taRsd.setFont(new Font("Monospaced", Font.BOLD, 15));
 		taRsd.setBounds(5, 5, 20, 20);
 		taRsd.setBorder(new EmptyBorder(5, 5, 5, 5));
-		taRsd.setLineWrap(true);// ¼¤»î×Ô¶¯»»ÐÐ¹¦ÄÜ
-		taRsd.setWrapStyleWord(true);// ¼¤»î¶ÏÐÐ²»¶Ï×Ö¹¦ÄÜ
+		taRsd.setLineWrap(true);// ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½
+		taRsd.setWrapStyleWord(true);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½
 
 		JScrollPane spRsd = new JScrollPane(taRsd);
 
@@ -143,7 +144,7 @@ public class CompareWin extends JFrame {
 		plRsd.setLayout(new BorderLayout());
 		plRsd.add(spRsd);
 
-		GridBagConstraints gbc_rsd = new GridBagConstraints(); // ÉèÖÃµ¥Ôª¸ñµÄÊôÐÔ
+		GridBagConstraints gbc_rsd = new GridBagConstraints(); // ï¿½ï¿½ï¿½Ãµï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		gbc_rsd.insets = new Insets(0, 0, 5, 0);
 		gbc_rsd.fill = GridBagConstraints.BOTH;
 		gbc_rsd.gridx = 0;
@@ -152,13 +153,13 @@ public class CompareWin extends JFrame {
 		gbc_rsd.gridheight = 1;
 		getContentPane().add(plRsd, gbc_rsd);
 
-		/* ±È½ÏµÄÎÄ±¾ */
+		/* ï¿½È½Ïµï¿½ï¿½Ä±ï¿½ */
 		taDst = new JTextArea();
 		taDst.setFont(new Font("Monospaced", Font.BOLD, 15));
 		taDst.setBorder(new EmptyBorder(5, 5, 5, 5));
 		taDst.setBounds(5, 5, 20, 20);
-		taDst.setLineWrap(true);// ¼¤»î×Ô¶¯»»ÐÐ¹¦ÄÜ
-		taDst.setWrapStyleWord(true);// ¼¤»î¶ÏÐÐ²»¶Ï×Ö¹¦ÄÜ
+		taDst.setLineWrap(true);// ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½
+		taDst.setWrapStyleWord(true);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½
 
 		JScrollPane spDst = new JScrollPane(taDst);
 
@@ -167,7 +168,7 @@ public class CompareWin extends JFrame {
 		plDst.setBackground(Color.WHITE);
 		plDst.add(spDst);
 
-		GridBagConstraints gbc_dst = new GridBagConstraints(); // ÉèÖÃµ¥Ôª¸ñµÄÊôÐÔ
+		GridBagConstraints gbc_dst = new GridBagConstraints(); // ï¿½ï¿½ï¿½Ãµï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		gbc_dst.insets = new Insets(0, 0, 5, 0);
 		gbc_dst.fill = GridBagConstraints.BOTH;
 		gbc_dst.gridx = 1;
@@ -176,9 +177,10 @@ public class CompareWin extends JFrame {
 		gbc_dst.gridheight = 1;
 		getContentPane().add(plDst, gbc_dst);
 
-		/* ±È½Ï°´Å¥ */
-		btCompare = new JButton("±È½Ï");
-		GridBagConstraints gbc_compare = new GridBagConstraints(); // ÉèÖÃµ¥Ôª¸ñµÄÊôÐÔ
+		/* ï¿½È½Ï°ï¿½Å¥ */
+		btCompare = new JButton("æ¯”è¾ƒ");
+		btCompare.setFont(new Font("Lucida Grande", Font.PLAIN, 25));
+		GridBagConstraints gbc_compare = new GridBagConstraints(); // ï¿½ï¿½ï¿½Ãµï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		gbc_compare.insets = new Insets(0, 0, 5, 0);
 		gbc_compare.fill = GridBagConstraints.BOTH;
 		gbc_compare.gridx = 0;
@@ -187,7 +189,7 @@ public class CompareWin extends JFrame {
 		gbc_compare.gridheight = 1;
 		getContentPane().add(btCompare, gbc_compare);
 
-		/* ±È½ÏµÄ½á¹û */
+		/* ï¿½È½ÏµÄ½ï¿½ï¿½ */
 		tpCompareResult = new myJTextJPane();
 		tpCompareResult.setBorder(new EmptyBorder(5, 5, 5, 5));
 		tpCompareResult.setEditable(false);
@@ -204,7 +206,7 @@ public class CompareWin extends JFrame {
 		plCompareResult.add(spCompareResult);
 		
 	      
-		GridBagConstraints gbc_compareR = new GridBagConstraints(); // ÉèÖÃµ¥Ôª¸ñµÄÊôÐÔ
+		GridBagConstraints gbc_compareR = new GridBagConstraints(); // ï¿½ï¿½ï¿½Ãµï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		gbc_compareR.insets = new Insets(0, 0, 5, 0);
 		gbc_compareR.fill = GridBagConstraints.BOTH;
 		gbc_compareR.gridx = 0;
@@ -231,13 +233,13 @@ public class CompareWin extends JFrame {
 		public void setDocs(String str, Color col, boolean bold, int fontSize) {
 			SimpleAttributeSet attrSet = new SimpleAttributeSet();
 			StyleConstants.setForeground(attrSet, col);
-			// ÑÕÉ«
+			// ï¿½ï¿½É«
 			if (bold == true) {
 				StyleConstants.setBold(attrSet, true);
-			} // ×ÖÌåÀàÐÍ
+			} // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			StyleConstants.setFontSize(attrSet, fontSize);
 //			StyleConstants.set
-			// ×ÖÌå´óÐ¡
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
 			
 			Document doc = this.getDocument();
 			str = str + "\n";
