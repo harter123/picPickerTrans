@@ -13,6 +13,7 @@ import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.util.ImageHelper;
+import text.compare.CompareWin;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -28,6 +29,9 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -54,6 +58,10 @@ public class Main extends JFrame {
 	private JPanel plTranslate;
 	private JScrollPane spTranslate;
 	private JTextArea taTranslate;
+	private JMenuBar menubar;
+	private JMenu menu;
+	private JMenuItem menuitemCompare;
+	private CompareWin frame;
 
 	/**
 	 * Launch the application.
@@ -77,6 +85,8 @@ public class Main extends JFrame {
 	public Main() {
 		initView();
 		TessInstance = new Tesseract();
+		
+		TessInstance.setDatapath(System.getProperty("user.dir")+"/tessdata");
 
 		btStartPicker.addActionListener(new ActionListener() {// 按钮添加事件，截图
 			public void actionPerformed(ActionEvent e) {
@@ -171,6 +181,24 @@ public class Main extends JFrame {
 			}
 		});
 		
+		menuitemCompare.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(null == frame){
+					try {
+						frame = new CompareWin();
+						frame.setVisible(true);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}else{
+					frame.setFocusable(true);
+					frame.setVisible(true);
+				}				
+			}
+		});
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -179,7 +207,7 @@ public class Main extends JFrame {
 	public void initView() {
 		setTitle("文字识别工具");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 928, 718);
+		setBounds(100, 100, 1258, 962);
 		gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] { 0.0, 6.0, 0.0, 3.0, 0.0, 3.0 };// 初始化布局
 		gridBagLayout.columnWeights = new double[] { 1, 18 };
@@ -303,8 +331,17 @@ public class Main extends JFrame {
 		gbc_plTranslate.gridwidth = 2;
 		gbc_plTranslate.gridheight = 1;
 		plTranslate.add(spTranslate);
-		
 		getContentPane().add(plTranslate, gbc_plTranslate);
+		
+		menubar = new JMenuBar();
+		this.setJMenuBar(menubar);
+		
+		menu = new JMenu("其他");
+		menu.setFont(new Font("Monospaced", Font.BOLD, 15));
+		menuitemCompare = new JMenuItem("文件比较");
+		menuitemCompare.setFont(new Font("Monospaced", Font.BOLD, 15));
+		menu.add(menuitemCompare);
+		menubar.add(menu);
 	}
 
 }
