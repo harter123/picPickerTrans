@@ -7,7 +7,6 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
 
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
@@ -16,6 +15,7 @@ import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.util.ImageHelper;
 import text.compare.CompareWin;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import java.awt.Image;
@@ -27,6 +27,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
@@ -54,7 +63,7 @@ public class Main extends JFrame {
 
 	public static Image img = null;
 	private JComboBox<String> cbLanguages;
-	ITesseract TessInstance = null;
+	static ITesseract TessInstance = null;
 	private JButton btTranslate;
 	private JPanel plTranslate;
 	private JScrollPane spTranslate;
@@ -63,6 +72,169 @@ public class Main extends JFrame {
 	private JMenu menu;
 	private JMenuItem menuitemCompare;
 	private CompareWin frame;
+
+	private String TmpLanguage = "eng";
+
+	/**
+	 * 删除单个文件
+	 * 
+	 * @param fileName
+	 *            被删除文件的文件名
+	 * @return 单个文件删除成功返回true,否则返回false
+	 */
+	public static boolean deleteFile(String fileName) {
+		File file = new File(fileName);
+		if (file.isFile() && file.exists()) {
+			file.delete();
+			System.out.println("删除单个文件" + fileName + "成功！");
+			return true;
+		} else {
+			System.out.println("删除单个文件" + fileName + "失败！");
+			return false;
+		}
+	}
+
+	public static void savePic(Image img, String path) {
+		int w = img.getWidth(null);
+		int h = img.getHeight(null);
+		// 首先创建一个BufferedImage变量，因为ImageIO写图片用到了BufferedImage变量。
+		BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+		// 再创建一个Graphics变量，用来画出来要保持的图片，及上面传递过来的Image变量
+		Graphics g = bi.getGraphics();
+		try {
+			g.drawImage(img, 0, 0, null);
+			// 将BufferedImage变量写入文件中。
+			ImageIO.write(bi, "png", new File(path));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null),BufferedImage.TYPE_INT_RGB);
+//		Graphics g = bufferedImage.createGraphics();
+//		g.drawImage(img, 0, 0, null);
+//		g.dispose();
+//		// // 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
+//		 BufferedImage textImage = ImageHelper.convertImageToGrayscale(bufferedImage);
+//		 // 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
+//		 // textImage = ImageHelper.convertImageToBinary(textImage);
+//		 //
+//		// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
+//		textImage = ImageHelper.getScaledInstance(textImage,textImage.getWidth() * 2,textImage.getHeight() * 2);
+//		
+//		try {
+//			// 将BufferedImage变量写入文件中。
+//			ImageIO.write(textImage, "png", new File(path));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	}
+
+	public static String doOCRbyCommand(Image image, String language) {
+		String picPath = System.getProperty("user.dir") + "/tmp.png";
+		String txtPath = System.getProperty("user.dir") + "/tmp.txt";
+		deleteFile(picPath);
+		deleteFile(txtPath);
+		savePic(image, picPath);
+		String command = "/usr/local/bin/tesseract " + picPath + " " + System.getProperty("user.dir") + "/tmp" + " -l "
+				+ language + " --tessdata-dir " + System.getProperty("user.dir") + "/tessdata";
+		InputStream in = null;
+		try {
+			Process pro = Runtime.getRuntime().exec(command);
+			// pro.waitFor();
+			in = pro.getInputStream();
+			BufferedReader read = new BufferedReader(new InputStreamReader(in));
+			String result = read.readLine();
+			System.out.println("INFO:" + command);
+			while (result != null) {
+				result = read.readLine();
+				System.out.println(result);
+			}
+			pro.waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String result = "";
+		StringBuilder sb = new StringBuilder();
+		try {
+			File file = new File(txtPath);
+			BufferedReader bf = new BufferedReader(new FileReader(file));
+			String content = "";
+			while (content != null) {
+				content = bf.readLine();
+				if (content == null) {
+					break;
+				}
+				sb.append(content);
+			}
+			bf.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		result = sb.toString();
+		// File filename = new File(txtPath); // 要读取以上路径的input。txt文件
+		// InputStreamReader reader;
+		// String line = "";
+
+		// try {
+		// reader = new InputStreamReader(
+		// new FileInputStream(filename));
+		// // 建立一个输入流对象reader
+		// @SuppressWarnings("resource")
+		// BufferedReader br = new BufferedReader(reader); //
+		// 建立一个对象，它把文件内容转成计算机能读懂的语言
+		//
+		// line = br.readLine();
+		// result = line;
+		// while (line != null) {
+		// line = br.readLine();
+		// result +=line;
+		// } // 一次读入一行数据
+		// } catch (FileNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// System.out.println(result);
+		return result;
+	}
+
+	public static String doOCRbyapi(Image img) throws TesseractException {
+		BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null),
+				BufferedImage.TYPE_INT_RGB);
+		Graphics g = bufferedImage.createGraphics();
+		g.drawImage(img, 0, 0, null);
+		g.dispose();
+
+		
+		//
+		//// 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
+		// BufferedImage textImage =
+		// ImageHelper.convertImageToGrayscale(bufferedImage);
+		//// 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
+		//// textImage = ImageHelper.convertImageToBinary(textImage);
+		//// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
+		// textImage = ImageHelper.getScaledInstance(textImage,
+		// textImage.getWidth() * 5,
+		// textImage.getHeight() * 5);
+		// instance.setDatapath("C:\\Users\\cch\\workspace\\picPicker\\tessdata");
+		//
+		// // 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
+		 BufferedImage textImage = ImageHelper.convertImageToGrayscale(bufferedImage);
+		 // 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
+		 // textImage = ImageHelper.convertImageToBinary(textImage);
+		 //
+		// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
+		textImage = ImageHelper.getScaledInstance(textImage,textImage.getWidth() * 5,textImage.getHeight() * 5);
+		
+		String result = TessInstance.doOCR(textImage);
+		return result;
+	}
 
 	/**
 	 * Launch the application.
@@ -86,9 +258,9 @@ public class Main extends JFrame {
 	public Main() {
 		initView();
 		TessInstance = new Tesseract1();
-		
-		TessInstance.setDatapath(System.getProperty("user.dir")+"/tessdata");
 
+		TessInstance.setDatapath(System.getProperty("user.dir") + "/tessdata");
+		// System.out.println(System.getProperty("user.dir")+"/tessdata");
 		btStartPicker.addActionListener(new ActionListener() {// 按钮添加事件，截图
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -99,8 +271,8 @@ public class Main extends JFrame {
 				}
 			}
 		});
-		
-		btIdentify.addActionListener(new ActionListener() {//识别
+
+		btIdentify.addActionListener(new ActionListener() {// 识别
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (null == img) {
@@ -110,42 +282,64 @@ public class Main extends JFrame {
 				btIdentify.setEnabled(false);
 				btIdentify.setText("正在识别中..");
 
-				BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null),
-						BufferedImage.TYPE_INT_RGB);
-				Graphics g = bufferedImage.createGraphics();
-				g.drawImage(Main.img, 0, 0, null);
-				g.dispose();
-
-				// 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
-				BufferedImage textImage = ImageHelper.convertImageToGrayscale(bufferedImage);
-				// 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
-				// textImage = ImageHelper.convertImageToBinary(textImage);
+				// BufferedImage bufferedImage = new
+				// BufferedImage(img.getWidth(null), img.getHeight(null),
+				// BufferedImage.TYPE_INT_RGB);
+				// Graphics g = bufferedImage.createGraphics();
+				// g.drawImage(Main.img, 0, 0, null);
+				// g.dispose();
+				//
+				// // 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
+				// BufferedImage textImage =
+				// ImageHelper.convertImageToGrayscale(bufferedImage);
+				// // 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
+				// // textImage = ImageHelper.convertImageToBinary(textImage);
+				// //
 				// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
-				textImage = ImageHelper.getScaledInstance(textImage, textImage.getWidth() * 5,
-						textImage.getHeight() * 5);
+				// textImage = ImageHelper.getScaledInstance(textImage,
+				// textImage.getWidth() * 5,
+				// textImage.getHeight() * 5);
 				// instance.setDatapath("C:\\Users\\cch\\workspace\\picPicker\\tessdata");
 
 				try {
-					String result = TessInstance.doOCR(textImage);
+					// String result;
+					// try {
+					// result = Main.doOCRbyapi(img);
+					// taResult.setText(result);
+					// } catch (TesseractException e) {
+					// // TODO Auto-generated catch block
+					// e.printStackTrace();
+					// }
+					String result = "";
+					if ("eng" == TmpLanguage){
+						try {
+							result = Main.doOCRbyapi(img);
+						} catch (TesseractException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else{
+						result = Main.doOCRbyCommand(img, TmpLanguage);
+					}
+					
 					taResult.setText(result);
 					// System.out.println(result);
-				} catch (TesseractException e) {
-					System.err.println(e.getMessage());
-					taResult.setText("识别失败..");
 				} finally {
 					btIdentify.setEnabled(true);
 					btIdentify.setText("识别");
 				}
 			}
 		});
-		
-		cbLanguages.addItemListener(new ItemListener() {//语言修改
+
+		cbLanguages.addItemListener(new ItemListener() {// 语言修改
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				// TODO Auto-generated method stub
+
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					String lang = "eng";
+					// TessInstance = new Tesseract1();ß
 					switch (cbLanguages.getSelectedIndex()) {
 					case 0:
 						lang = "eng";
@@ -160,20 +354,21 @@ public class Main extends JFrame {
 						lang = "chi_sim";
 						break;
 					}
+					TmpLanguage = lang;
 					TessInstance.setLanguage(lang);
 				}
 			}
 		});
-		
+
 		btTranslate.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				btTranslate.setEnabled(false);
 				btTranslate.setText("正在翻译..");
 				String re = Languages.translate(taResult.getText());
-				if(""==re || null==re){
+				if ("" == re || null == re) {
 					return;
 				}
 				taTranslate.setText(re);
@@ -181,25 +376,25 @@ public class Main extends JFrame {
 				btTranslate.setText("翻译");
 			}
 		});
-		
+
 		menuitemCompare.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(null == frame){
+				if (null == frame) {
 					try {
 						frame = new CompareWin();
 						frame.setVisible(true);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-				}else{
+				} else {
 					frame.setFocusable(true);
 					frame.setVisible(true);
-				}				
+				}
 			}
 		});
-		
+
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -243,9 +438,9 @@ public class Main extends JFrame {
 		gbc_plImage.gridheight = 1;
 
 		getContentPane().add(spImage, gbc_plImage);// 把滑动面板添加到单元格
-		
+
 		btIdentify = new JButton("\u8BC6\u522B");// 添加翻译按钮
-		
+
 		btIdentify.setFont(new Font("Dialog", Font.PLAIN, 25));
 		GridBagConstraints gbc_btIdentify = new GridBagConstraints();
 		gbc_btIdentify.fill = GridBagConstraints.BOTH;
@@ -290,8 +485,8 @@ public class Main extends JFrame {
 		DefaultListCellRenderer dlcr = new DefaultListCellRenderer();
 		dlcr.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
 		cbLanguages.setRenderer(dlcr);
-//		cbLanguages.setBorder(new EmptyBorder(0, 0, 0, 0));
-		
+		// cbLanguages.setBorder(new EmptyBorder(0, 0, 0, 0));
+
 		GridBagConstraints gbc_cbLanguages = new GridBagConstraints();
 		gbc_cbLanguages.insets = new Insets(0, 0, 5, 0);
 		gbc_cbLanguages.fill = GridBagConstraints.HORIZONTAL;
@@ -301,7 +496,6 @@ public class Main extends JFrame {
 		gbc_cbLanguages.gridheight = 1;
 		getContentPane().add(cbLanguages, gbc_cbLanguages);
 
-		
 		btTranslate = new JButton("翻译");
 		btTranslate.setFont(new Font("宋体", Font.PLAIN, 25));
 		GridBagConstraints gbc_btTranslate = new GridBagConstraints();
@@ -312,7 +506,6 @@ public class Main extends JFrame {
 		gbc_btTranslate.gridwidth = 2;
 		gbc_btTranslate.gridheight = 1;
 		getContentPane().add(btTranslate, gbc_btTranslate);// 添加截图按钮
-
 
 		taTranslate = new JTextArea();
 		taTranslate.setWrapStyleWord(true);
@@ -333,10 +526,10 @@ public class Main extends JFrame {
 		gbc_plTranslate.gridheight = 1;
 		plTranslate.add(spTranslate);
 		getContentPane().add(plTranslate, gbc_plTranslate);
-		
+
 		menubar = new JMenuBar();
 		this.setJMenuBar(menubar);
-		
+
 		menu = new JMenu("其他");
 		menu.setFont(new Font("Monospaced", Font.BOLD, 25));
 		menuitemCompare = new JMenuItem("文件比较");
