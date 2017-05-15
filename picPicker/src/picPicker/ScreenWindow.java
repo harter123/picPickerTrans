@@ -1,8 +1,10 @@
 package picPicker;
 
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
@@ -21,13 +23,18 @@ class ScreenWindow extends JFrame {
 	private int y = 0;
 	private int xEnd = 0;
 	private int yEnd = 0;
+	private int xMove = 0;
+	private int yMove = 0;
 	
 	private JLabel label;
+	private Image image;
 	
 
 	public ScreenWindow(final JLabel imgLabel) throws AWTException, InterruptedException {
 		Dimension screenDims = Toolkit.getDefaultToolkit().getScreenSize();
-		label = new drawJlabel(new ImageIcon(ScreenImage.getScreenImage(0, 0, screenDims.width, screenDims.height)));
+		image = ScreenImage.getScreenImage(0, 0, screenDims.width, screenDims.height);
+		label = new drawJlabel(new ImageIcon(image));
+		
 		label.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		label.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -60,7 +67,7 @@ class ScreenWindow extends JFrame {
 						Main.img = img;
 						imgLabel.setIcon(new ImageIcon(img));
 					} catch (Exception ex) {
-						JOptionPane.showConfirmDialog(null, "³öÏÖÒâÍâ´íÎó£¡", "ÏµÍ³ÌáÊ¾", JOptionPane.DEFAULT_OPTION,
+						JOptionPane.showConfirmDialog(null, "å‡ºçŽ°æ„å¤–é”™è¯¯ï¼", "ç³»ç»Ÿæç¤º", JOptionPane.DEFAULT_OPTION,
 								JOptionPane.ERROR_MESSAGE);
 					}
 					dispose();
@@ -71,10 +78,13 @@ class ScreenWindow extends JFrame {
 			public void mouseDragged(MouseEvent e) {
 				if (!isDrag)
 					isDrag = true;
+				xMove = e.getX();
+				yMove = e.getY();
+				label.repaint();
 			}
 
 			public void mouseMoved(MouseEvent e) {
-				/** ÍÏ¶¯¹ý³ÌµÄÐéÏßÑ¡È¡¿òÐè×Ô¼ºÊµÏÖ */
+				/** æ‹–åŠ¨è¿‡ç¨‹çš„è™šçº¿é€‰å–æ¡†éœ€è‡ªå·±å®žçŽ° */
 //				Graphics gc = label.getGraphics();
 //				label.repaint();
 			}
@@ -88,15 +98,39 @@ class ScreenWindow extends JFrame {
 	
 	class drawJlabel extends JLabel  
 	{  
-	    public drawJlabel(ImageIcon imageIcon) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public drawJlabel(ImageIcon imageIcon) {
 			// TODO Auto-generated constructor st
 	    	super(imageIcon);
 		}
 
-//		public void paint(Graphics g)  
-//	    {  
+		public void paint(Graphics g)  
+	    {  
 //	        g.drawLine(100, 100, 200, 200);  
-//	    }  
+			g.drawImage(image, 0, 0, null);
+			g.setColor(Color.RED);
+			int xT,yT,xMoveT,yMoveT;
+			if(x > xMove){
+				xT = xMove;
+				xMoveT = x;
+			}else{
+				xT = x;
+				xMoveT = xMove;
+			}
+			
+			if(y > yMove){
+				yT = yMove;
+				yMoveT = y;
+			}else{
+				yT = y;
+				yMoveT = yMove;
+			}
+			g.drawRect(xT, yT, xMoveT-xT, yMoveT-yT);
+	    }  
 	} 
 }
 

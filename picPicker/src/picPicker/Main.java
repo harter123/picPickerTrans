@@ -93,6 +93,7 @@ public class Main extends JFrame {
 				try {
 					new ScreenWindow(lbImage);
 				} catch (Exception e1) {
+					System.out.println(e);
 					JOptionPane.showConfirmDialog(null, "出现意外错误！", "系统提示", JOptionPane.DEFAULT_OPTION,
 							JOptionPane.ERROR_MESSAGE);
 				}
@@ -116,16 +117,16 @@ public class Main extends JFrame {
 				g.dispose();
 
 				// 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
-				BufferedImage textImage = ImageHelper.convertImageToGrayscale(bufferedImage);
-				// 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
-				// textImage = ImageHelper.convertImageToBinary(textImage);
-				// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
-				textImage = ImageHelper.getScaledInstance(textImage, textImage.getWidth() * 5,
-						textImage.getHeight() * 5);
-				// instance.setDatapath("C:\\Users\\cch\\workspace\\picPicker\\tessdata");
+//				BufferedImage textImage = ImageHelper.convertImageToGrayscale(bufferedImage);
+//				// 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
+//				// textImage = ImageHelper.convertImageToBinary(textImage);
+//				// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
+//				textImage = ImageHelper.getScaledInstance(textImage, textImage.getWidth() * 5,
+//						textImage.getHeight() * 5);
+//				// instance.setDatapath("C:\\Users\\cch\\workspace\\picPicker\\tessdata");
 
 				try {
-					String result = TessInstance.doOCR(textImage);
+					String result = TessInstance.doOCR(bufferedImage);
 					taResult.setText(result);
 					// System.out.println(result);
 				} catch (TesseractException e) {
@@ -214,7 +215,7 @@ public class Main extends JFrame {
 		getContentPane().setLayout(gridBagLayout);
 
 		btStartPicker = new JButton("\u622A\u5C4F");
-		btStartPicker.setFont(new Font("宋体", Font.PLAIN, 20));
+		btStartPicker.setFont(new Font("宋体", Font.PLAIN, 25));
 		GridBagConstraints gbc_btStartPicker = new GridBagConstraints();
 		gbc_btStartPicker.fill = GridBagConstraints.BOTH;
 		gbc_btStartPicker.insets = new Insets(0, 0, 5, 0);
@@ -245,7 +246,7 @@ public class Main extends JFrame {
 		
 		btIdentify = new JButton("\u8BC6\u522B");// 添加翻译按钮
 		
-		btIdentify.setFont(new Font("宋体", Font.PLAIN, 20));
+		btIdentify.setFont(new Font("宋体", Font.PLAIN, 25));
 		GridBagConstraints gbc_btIdentify = new GridBagConstraints();
 		gbc_btIdentify.fill = GridBagConstraints.BOTH;
 		gbc_btIdentify.insets = new Insets(0, 0, 5, 0);
