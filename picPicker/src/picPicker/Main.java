@@ -17,6 +17,7 @@ import text.compare.CompareWin;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Image;
 import java.awt.GridBagLayout;
@@ -46,6 +47,8 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.Component;
 
 public class Main extends JFrame {
@@ -72,71 +75,18 @@ public class Main extends JFrame {
 	private JMenu menu;
 	private JMenuItem menuitemCompare;
 	private CompareWin frame;
+	
+	private JButton btSelectPic;
 
 	private String TmpLanguage = "eng";
 
-	/**
-	 * 删除单个文件
-	 * 
-	 * @param fileName
-	 *            被删除文件的文件名
-	 * @return 单个文件删除成功返回true,否则返回false
-	 */
-	public static boolean deleteFile(String fileName) {
-		File file = new File(fileName);
-		if (file.isFile() && file.exists()) {
-			file.delete();
-			System.out.println("删除单个文件" + fileName + "成功！");
-			return true;
-		} else {
-			System.out.println("删除单个文件" + fileName + "失败！");
-			return false;
-		}
-	}
-
-	public static void savePic(Image img, String path) {
-		int w = img.getWidth(null);
-		int h = img.getHeight(null);
-		// 首先创建一个BufferedImage变量，因为ImageIO写图片用到了BufferedImage变量。
-		BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
-		// 再创建一个Graphics变量，用来画出来要保持的图片，及上面传递过来的Image变量
-		Graphics g = bi.getGraphics();
-		try {
-			g.drawImage(img, 0, 0, null);
-			// 将BufferedImage变量写入文件中。
-			ImageIO.write(bi, "png", new File(path));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-//		BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null),BufferedImage.TYPE_INT_RGB);
-//		Graphics g = bufferedImage.createGraphics();
-//		g.drawImage(img, 0, 0, null);
-//		g.dispose();
-//		// // 这里对图片黑白处理,增强识别率.这里先通过截图,截取图片中需要识别的部分
-//		 BufferedImage textImage = ImageHelper.convertImageToGrayscale(bufferedImage);
-//		 // 图片锐化,自己使用中影响识别率的主要因素是针式打印机字迹不连贯,所以锐化反而降低识别率
-//		 // textImage = ImageHelper.convertImageToBinary(textImage);
-//		 //
-//		// 图片放大5倍,增强识别率(很多图片本身无法识别,放大5倍时就可以轻易识,但是考滤到客户电脑配置低,针式打印机打印不连贯的问题,这里就放大5倍)
-//		textImage = ImageHelper.getScaledInstance(textImage,textImage.getWidth() * 2,textImage.getHeight() * 2);
-//		
-//		try {
-//			// 将BufferedImage变量写入文件中。
-//			ImageIO.write(textImage, "png", new File(path));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
 
 	public static String doOCRbyCommand(Image image, String language) {
 		String picPath = System.getProperty("user.dir") + "/tmp.png";
 		String txtPath = System.getProperty("user.dir") + "/tmp.txt";
-		deleteFile(picPath);
-		deleteFile(txtPath);
-		savePic(image, picPath);
+		Util.deleteFile(picPath);
+		Util.deleteFile(txtPath);
+		Util.savePic(image, picPath);
 		String command = "/usr/local/bin/tesseract " + picPath + " " + System.getProperty("user.dir") + "/tmp" + " -l "
 				+ language + " --tessdata-dir " + System.getProperty("user.dir") + "/tessdata";
 		InputStream in = null;
@@ -394,7 +344,37 @@ public class Main extends JFrame {
 				}
 			}
 		});
-
+		
+		btSelectPic.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JFileChooser jfc=new JFileChooser();  
+		        jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );  
+		        jfc.showDialog(new JLabel(), "选择");  
+		        File file=jfc.getSelectedFile();
+		        if(null==file){
+		        	return;
+		        }
+		        if(file.isDirectory()){
+		            System.out.println("文件夹:"+file.getAbsolutePath());  
+		        }else if(file.isFile()){
+		            System.out.println("文件:"+file.getAbsolutePath());  
+		        }
+		        if(Util.isImage(file)){
+		        	ImageIcon img = new ImageIcon(file.getAbsolutePath());
+					lbImage.setIcon(img);
+					Main.img = img.getImage();
+		        }else{
+		        	JOptionPane.showMessageDialog(Main.this, "请选择图片");
+		        }
+//		        System.out.println(jfc.getSelectedFile().getName());
+		        
+		        
+			}
+		});
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -403,7 +383,7 @@ public class Main extends JFrame {
 	public void initView() {
 		setTitle("文字识别工具");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1258, 962);
+		setBounds(100, 100, 1131, 797);
 		gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] { 0.0, 6.0, 0.0, 3.0, 0.0, 3.0 };// 初始化布局
 		gridBagLayout.columnWeights = new double[] { 1, 18 };
@@ -414,11 +394,22 @@ public class Main extends JFrame {
 		GridBagConstraints gbc_btStartPicker = new GridBagConstraints();
 		gbc_btStartPicker.fill = GridBagConstraints.BOTH;
 		gbc_btStartPicker.insets = new Insets(0, 0, 5, 0);
-		gbc_btStartPicker.gridx = 0;
+		gbc_btStartPicker.gridx = 1;
 		gbc_btStartPicker.gridy = 0;
-		gbc_btStartPicker.gridwidth = 2;
+		gbc_btStartPicker.gridwidth = 1;
 		gbc_btStartPicker.gridheight = 1;
 		getContentPane().add(btStartPicker, gbc_btStartPicker);// 添加截图按钮
+		
+		btSelectPic = new JButton("选择图片");
+		btSelectPic.setFont(new Font("Dialog",Font.PLAIN,25));
+		GridBagConstraints gbc_btSelectPic = new GridBagConstraints();
+		gbc_btSelectPic.fill = GridBagConstraints.BOTH;
+		gbc_btSelectPic.insets = new Insets(0, 0, 5, 0);
+		gbc_btSelectPic.gridx = 0;
+		gbc_btSelectPic.gridy = 0;
+		gbc_btSelectPic.gridwidth = 1;
+		gbc_btSelectPic.gridheight = 1;
+		getContentPane().add(btSelectPic, gbc_btSelectPic);// 添加截图按钮
 
 		// 初始化面板
 		plImage = new JPanel();

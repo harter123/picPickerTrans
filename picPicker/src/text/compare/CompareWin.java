@@ -94,27 +94,33 @@ public class CompareWin extends JFrame {
 					return;
 				}
 //				System.out.println(p.diff_main("12352��2", "12332��2",true,10));
-				LinkedList<Diff> list = diff.diff_main(text1, text2, true);
-				if(null==list||0==list.size()){
-					return;
-				}
-				for (Diff diff : list) {
-					if(null==diff){
-						continue;
+				try{
+					LinkedList<Diff> list = diff.diff_main(text1, text2, true);
+					if(null==list||0==list.size()){
+						return;
 					}
-					Operation op = diff.operation;
-					switch (op){
-						case DELETE:
-							tpCompareResult.setDocs(diff.text, Color.RED, true, 15);
-							break;
-						case INSERT:
-							tpCompareResult.setDocs(diff.text, Color.BLUE, true, 15);
-							break;
-						case EQUAL:
-							tpCompareResult.setDocs(diff.text, Color.BLACK, false, 15);
-							break;
+					for (Diff diff : list) {
+						if(null==diff){
+							continue;
+						}
+						Operation op = diff.operation;
+						switch (op){
+							case DELETE:
+								tpCompareResult.setDocs(diff.text, Color.RED, true, 15);
+								break;
+							case INSERT:
+								tpCompareResult.setDocs(diff.text, Color.BLUE, true, 15);
+								break;
+							case EQUAL:
+								tpCompareResult.setDocs(diff.text, Color.BLACK, false, 15);
+								break;
+						}
+						
 					}
-					
+				}catch (Exception e1) {
+					// TODO: handle exception
+					System.out.println(e1);
+					tpCompareResult.setDocs("比较出错，请重试", Color.BLACK, false, 15);
 				}
 			}
 		});
