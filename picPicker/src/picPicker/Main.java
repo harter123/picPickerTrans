@@ -16,6 +16,7 @@ import net.sourceforge.tess4j.util.ImageHelper;
 import text.compare.CompareWin;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Image;
 import java.awt.GridBagLayout;
@@ -26,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
@@ -36,6 +38,8 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.Component;
 
 public class Main extends JFrame {
@@ -62,6 +66,8 @@ public class Main extends JFrame {
 	private JMenu menu;
 	private JMenuItem menuitemCompare;
 	private CompareWin frame;
+	
+	private JButton btSelectPic;
 
 	/**
 	 * Launch the application.
@@ -200,6 +206,33 @@ public class Main extends JFrame {
 			}
 		});
 		
+		btSelectPic.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JFileChooser jfc=new JFileChooser();  
+		        jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );  
+		        jfc.showDialog(new JLabel(), "选择");  
+		        File file=jfc.getSelectedFile();
+		        if(null==file){
+		        	return;
+		        }
+		        if(file.isDirectory()){
+		            System.out.println("文件夹:"+file.getAbsolutePath());  
+		        }else if(file.isFile()){
+		            System.out.println("文件:"+file.getAbsolutePath());  
+		        }
+		        if(Util.isImage(file)){
+		        	ImageIcon img = new ImageIcon(file.getAbsolutePath());
+					lbImage.setIcon(img);
+					Main.img = img.getImage();
+		        }else{
+		        	JOptionPane.showMessageDialog(Main.this, "请选择图片");
+		        }
+			}
+		});
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -219,11 +252,22 @@ public class Main extends JFrame {
 		GridBagConstraints gbc_btStartPicker = new GridBagConstraints();
 		gbc_btStartPicker.fill = GridBagConstraints.BOTH;
 		gbc_btStartPicker.insets = new Insets(0, 0, 5, 0);
-		gbc_btStartPicker.gridx = 0;
+		gbc_btStartPicker.gridx = 1;
 		gbc_btStartPicker.gridy = 0;
-		gbc_btStartPicker.gridwidth = 2;
+		gbc_btStartPicker.gridwidth = 1;
 		gbc_btStartPicker.gridheight = 1;
 		getContentPane().add(btStartPicker, gbc_btStartPicker);// 添加截图按钮
+		
+		btSelectPic = new JButton("选择图片");
+		btSelectPic.setFont(new Font("宋体",Font.PLAIN,25));
+		GridBagConstraints gbc_btSelectPic = new GridBagConstraints();
+		gbc_btSelectPic.fill = GridBagConstraints.BOTH;
+		gbc_btSelectPic.insets = new Insets(0, 0, 5, 0);
+		gbc_btSelectPic.gridx = 0;
+		gbc_btSelectPic.gridy = 0;
+		gbc_btSelectPic.gridwidth = 1;
+		gbc_btSelectPic.gridheight = 1;
+		getContentPane().add(btSelectPic, gbc_btSelectPic);
 
 		// 初始化面板
 		plImage = new JPanel();
